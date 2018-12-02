@@ -20,9 +20,9 @@ class Harold:
     def run(self):
         if not self.playing:
             pass
-            # mixer.init()
-            # mixer.music.load(self.music)
-            # mixer.music.play()
+            mixer.init()
+            mixer.music.load(self.music)
+            mixer.music.play()
 
 
 def get_music():

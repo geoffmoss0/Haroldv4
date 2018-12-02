@@ -17,12 +17,11 @@ def create_conn():
 def create_users(conn: Connection):
     sql = """
             CREATE TABLE IF NOT EXISTS users (
-                username text NOT NULL PRIMARY KEY,
+                username text NOT NULL UNIQUE PRIMARY KEY,
                 path text,
                 song_plays integer
             );"""
     c = conn.cursor()
-    c.execute("DROP TABLE users")
     c.execute(sql)
 
 
@@ -34,17 +33,31 @@ def main():
     conn = create_conn()
     c = conn.cursor()
     create_users(conn)
-    h = Harold()
-    h.run()
 
-    run = True
-    while run:
-        user_in = input("Input username")
-        if user_in == "quit":
-            run = False
-        else:
-            args = user_in.split(" ")
-            c.execute("""INSERT INTO Users(username, path, song_plays) VALUES( {username}, )""".format(username=args[0]))
+    go = True
+    while go:
+        action = input("Input desired action (Create user (USER) or View users (VIEW) or Clear table (CLEAR) or exit (QUIT)): \n")
+        if action == "CREATE":
+            run = True
+            while run:
+                user_in = input("Input username: ")
+                if user_in == "quit":
+                    run = False
+                else:
+                    args = user_in.split(" ")
+                    c.execute(
+                        'INSERT INTO Users(username, path, song_plays) VALUES( "{username}", "C:\\Users\\gb_mo\\Documents\\Work\\Coding\\Haroldv4\\database.db", 0)'.format(
+                            username=args[0]))
+        elif action == "VIEW":
+            c.execute('SELECT * FROM users')
+            rows = c.fetchall()
+            for row in rows:
+                print(row)
+        elif action == "QUIT":
+            go = False
+        elif action == "CLEAR":
+            c.execute("DROP TABLE users")
+            create_users(conn)
 
 
 if __name__ == "__main__":
